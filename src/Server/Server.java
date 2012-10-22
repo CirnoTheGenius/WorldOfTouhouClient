@@ -7,7 +7,7 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import Client.ClientVar;
+import ClientLauncher.ClientVar;
 
 public class Server {
 	

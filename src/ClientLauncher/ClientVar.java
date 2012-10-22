@@ -1,4 +1,4 @@
-package Client;
+package ClientLauncher;
 
 import java.io.Console;
 import java.net.Socket;
