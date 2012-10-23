@@ -6,8 +6,6 @@ package ClientLauncher;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.net.Socket;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JTextField;
@@ -22,8 +20,8 @@ public class Main extends JFrame implements ActionListener {
 	private JFrame main;
 	private JTextField host, username;
 	private JButton confirm;
-	private Chat chat;
-	
+	private boolean isRunning;
+
 	public Main(){
 		main = new JFrame("World of Touhou: ClientLauncher");
 		host = new JTextField("Host");
@@ -37,10 +35,11 @@ public class Main extends JFrame implements ActionListener {
 		confirm.addActionListener(this);
 		main.setSize(500, 300);
 		main.setVisible(true);
+		main.setLocationRelativeTo(null);
 	}
 
 	public static void main(String[] args){
-		Main main = new Main();
+		new Main();
 	}
 
 	@Override
@@ -51,7 +50,11 @@ public class Main extends JFrame implements ActionListener {
 			Client.setSocket(new Socket(Client.getHost(), 9999));
 			s = Client.getServer();
 			s.sendData("user/" + Client.getUser());
-			chat = new Chat(s, Client);
+			if(!isRunning){
+				Client.setChat(new Chat(s, Client));
+				isRunning = true;
+				main.setVisible(false);
+			}
 		} catch (Exception e){
 			e.printStackTrace();
 		}
