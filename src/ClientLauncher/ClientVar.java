@@ -3,6 +3,7 @@ package ClientLauncher;
 import java.io.Console;
 import java.net.Socket;
 
+import Client.Chat;
 import Server.Server;
 
 public class ClientVar {
@@ -10,7 +11,7 @@ public class ClientVar {
 	private Server s;
 	private String username, host;
 	private Socket connect;
-	private ClientVar vars;
+	private Chat chat;
 	
 	public ClientVar(){
 		s = new Server(this);
@@ -36,6 +37,10 @@ public class ClientVar {
 		return connect;
 	}
 	
+	public Chat getChat(){
+		return chat;
+	}
+	
 	public void setHost(String h){
 		host = h;
 	}
@@ -46,5 +51,9 @@ public class ClientVar {
 	
 	public void setSocket(Socket s){
 		connect = s;
+	}
+	
+	public void setChat(Chat c){
+		chat = c;
 	}
 }
