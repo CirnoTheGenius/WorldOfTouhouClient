@@ -6,15 +6,15 @@ import java.net.DatagramSocket;
 import java.net.SocketException;
 
 public class RecieveDataThread extends Thread {
-	
+
 	DatagramSocket ds;
 	DatagramPacket pk;
 	byte[] data;
-	
+
 	public RecieveDataThread(){
 		super.start();
 	}
-	
+
 	public void run(){
 		try {
 			ds = new DatagramSocket(8494);
@@ -23,7 +23,7 @@ public class RecieveDataThread extends Thread {
 		} catch (SocketException e1) {
 			e1.printStackTrace();
 		}
-		
+
 		while(true){
 			try {		
 				ds.receive(pk);
@@ -34,5 +34,5 @@ public class RecieveDataThread extends Thread {
 			}
 		}
 	}
-	
+
 }
