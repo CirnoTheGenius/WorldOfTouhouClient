@@ -4,7 +4,6 @@ package ClientLauncher;
  * @author Cirno the Genius/Tenko.
  */
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedInputStream;
@@ -21,7 +20,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
-import Client.Chat;
 import Client.Game;
 import Server.Server;
 
@@ -32,12 +30,17 @@ public class Main extends JFrame implements ActionListener {
 	private JFrame main;
 	private JTextField host, username;
 	private JButton confirm;
-	private JLabel picture;
+	private JLabel picture, watermark;
+	
 	private final boolean debug = false;
 	
 	private boolean isRunning;
 
 	public Main() throws IOException{
+		
+		InputStream sideimg = randomSideImage();
+		InputStream watermarkimg = new BufferedInputStream(getClass().getResourceAsStream("/SideImages/mark.png"));
+
 		main = new JFrame("ClientLauncher");
 		main.setLayout(new FlowLayout());
 		main.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -45,7 +48,6 @@ public class Main extends JFrame implements ActionListener {
 		main.setVisible(true);
 		main.setLocationRelativeTo(null);
 		main.setResizable(false);
-		picture = new JLabel();
 		
 		host = new JTextField("Host");
 		host.setSize(310, 50);
@@ -55,21 +57,30 @@ public class Main extends JFrame implements ActionListener {
 		username.setSize(310, 50);
 		username.setLocation(360, 160);
 		
-		
 		confirm = new JButton("Connect!");
 		confirm.addActionListener(this);
 		confirm.setSize(155, 50);
 		confirm.setLocation(440, 220);
-		
-		picture.setIcon(randomSideImage());
+
+		picture = new JLabel();
+		picture.setIcon(new ImageIcon(ImageIO.read(sideimg)));
 		picture.setSize(340, 357);
 		picture.setLocation(0, 0);
+		
+		watermark = new JLabel();
+		watermark.setIcon(new ImageIcon(ImageIO.read(watermarkimg)));
+		watermark.setSize(100, 89);
+		watermark.setLocation(600, 269);
 		
 		main.getContentPane().add(picture);
 		main.getContentPane().add(host);
 		main.getContentPane().add(username);
 		main.getContentPane().add(confirm);
+		main.getContentPane().add(watermark);
 		main.repaint();
+		
+		sideimg.close();
+		watermarkimg.close();
 	}
 
 	@SuppressWarnings("unused")
@@ -77,13 +88,13 @@ public class Main extends JFrame implements ActionListener {
 		new Main();
 	}
 	
-	public ImageIcon randomSideImage() throws IOException{
-		int num = new Random().nextInt(6);
-		if(num == 6){
+	public InputStream randomSideImage(){
+		int num = new Random().nextInt(5);
+		if(num == 5){
 			num = 0;
 		}
-		InputStream is = new BufferedInputStream(getClass().getResourceAsStream("/SideImages/img" + num + ".png"));
-		return new ImageIcon(ImageIO.read(is));
+		
+		return new BufferedInputStream(getClass().getResourceAsStream("/SideImages/img" + num + ".png"));
 	}
 
 	@Override
