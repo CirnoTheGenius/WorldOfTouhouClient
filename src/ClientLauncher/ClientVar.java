@@ -5,6 +5,7 @@ import java.net.Socket;
 
 import Client.Chat;
 import Client.Game;
+import Exceptions.GameRunningException;
 import Server.Server;
 
 public class ClientVar {
@@ -14,7 +15,6 @@ public class ClientVar {
 	private Socket connect;
 	private Chat chat;
 	private Game game;
-	private boolean isRunning = false;
 	
 	public ClientVar(){
 		s = new Server(this);
@@ -61,11 +61,7 @@ public class ClientVar {
 	}
 
 	public void setChat(Chat c){
-		if(!isRunning){
-			chat = c;
-		} else {
-			
-		}
+		chat = c;
 	}
 	
 	public void setGame(Game g){

@@ -11,18 +11,19 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 import Client.Chat;
 import Client.Game;
 import Server.Server;
-
 
 public class Main extends JFrame implements ActionListener {
 
@@ -32,43 +33,57 @@ public class Main extends JFrame implements ActionListener {
 	private JTextField host, username;
 	private JButton confirm;
 	private JLabel picture;
-
+	private final boolean debug = false;
+	
 	private boolean isRunning;
 
 	public Main() throws IOException{
 		main = new JFrame("ClientLauncher");
 		main.setLayout(new FlowLayout());
 		main.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		main.getContentPane().setLayout(new GridLayout(4, 2));
-		main.setSize(700, 400);
+		main.setSize(700, 386);
 		main.setVisible(true);
 		main.setLocationRelativeTo(null);
 		main.setResizable(false);
 		picture = new JLabel();
 		
 		host = new JTextField("Host");
-
+		host.setSize(310, 50);
+		host.setLocation(360, 100);
+		
 		username = new JTextField("username");
-
+		username.setSize(310, 50);
+		username.setLocation(360, 160);
+		
+		
 		confirm = new JButton("Connect!");
 		confirm.addActionListener(this);
-
-		InputStream is = new BufferedInputStream(getClass().getResourceAsStream("/something.jpg"));
-
-		picture.setIcon(new ImageIcon(ImageIO.read(is)));
+		confirm.setSize(155, 50);
+		confirm.setLocation(440, 220);
+		
+		picture.setIcon(randomSideImage());
+		picture.setSize(340, 357);
+		picture.setLocation(0, 0);
 		
 		main.getContentPane().add(picture);
 		main.getContentPane().add(host);
 		main.getContentPane().add(username);
 		main.getContentPane().add(confirm);
-		
 		main.repaint();
-		main.validate();
 	}
 
 	@SuppressWarnings("unused")
 	public static void main(String[] args) throws IOException{
 		new Main();
+	}
+	
+	public ImageIcon randomSideImage() throws IOException{
+		int num = new Random().nextInt(6);
+		if(num == 6){
+			num = 0;
+		}
+		InputStream is = new BufferedInputStream(getClass().getResourceAsStream("/SideImages/img" + num + ".png"));
+		return new ImageIcon(ImageIO.read(is));
 	}
 
 	@Override
@@ -76,16 +91,18 @@ public class Main extends JFrame implements ActionListener {
 		try {
 			Client.setHost(host.getText());
 			Client.setUser(username.getText());
-			Client.setSocket(new Socket(Client.getHost(), 9999));
+			if(debug){
+				Client.setSocket(new Socket(Client.getHost(), 9999));
+			}
 			s = Client.getServer();
 			s.sendData("user/" + Client.getUser());
 			if(!isRunning){
-				Client.setChat(new Chat(s, Client));
-				Client.setGame(new Game());
+				Client.setGame(new Game(s, Client));
 				isRunning = true;
 				main.setVisible(false);
 			}
 		} catch (Exception e){
+			JOptionPane.showMessageDialog(main, "Could not connect to " + host.getText() + "!", "Failed to Connect!", JOptionPane.ERROR_MESSAGE);
 			e.printStackTrace();
 		}
 	}

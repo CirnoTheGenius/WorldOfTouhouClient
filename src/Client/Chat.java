@@ -27,7 +27,6 @@ public class Chat extends JFrame {
 		chat = new JTextField();
 		main.getContentPane().add(history);
 		main.getContentPane().add(chat);
-		main.setVisible(true);
 		main.setResizable(false);
 		main.setSize(690, 75);
 		main.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
