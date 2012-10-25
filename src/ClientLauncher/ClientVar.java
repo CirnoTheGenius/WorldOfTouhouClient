@@ -3,9 +3,7 @@ package ClientLauncher;
 import java.io.Console;
 import java.net.Socket;
 
-import Client.Chat;
 import Client.Game;
-import Exceptions.GameRunningException;
 import Server.Server;
 
 public class ClientVar {
@@ -13,8 +11,8 @@ public class ClientVar {
 	private Server s;
 	private String username, host;
 	private Socket connect;
-	private Chat chat;
 	private Game game;
+	public boolean isChatting;
 	
 	public ClientVar(){
 		s = new Server(this);
@@ -39,10 +37,6 @@ public class ClientVar {
 	public Socket getSocket(){
 		return connect;
 	}
-
-	public Chat getChat(){
-		return chat;
-	}
 	
 	public Game getGame(){
 		return game;
@@ -58,10 +52,6 @@ public class ClientVar {
 
 	public void setSocket(Socket s){
 		connect = s;
-	}
-
-	public void setChat(Chat c){
-		chat = c;
 	}
 	
 	public void setGame(Game g){
