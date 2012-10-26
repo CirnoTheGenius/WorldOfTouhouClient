@@ -5,13 +5,17 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 
+import Client.Game;
+
 public class RecieveDataThread extends Thread {
 
 	DatagramSocket ds;
 	DatagramPacket pk;
 	byte[] data;
-
-	public RecieveDataThread(){
+	Game g;
+	
+	public RecieveDataThread(Game g){
+		this.g = g;
 		super.start();
 	}
 
@@ -25,10 +29,10 @@ public class RecieveDataThread extends Thread {
 		}
 
 		while(true){
-			try {		
+			try {
 				ds.receive(pk);
-				System.out.println(new String(pk.getData()));
-				ds.close();
+				g.chatmsg = new String(pk.getData()).trim();
+				g.repaint();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

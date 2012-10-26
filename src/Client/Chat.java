@@ -1,6 +1,5 @@
 package Client;
 
-import java.awt.FlowLayout;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
 import java.awt.event.KeyEvent;
@@ -21,7 +20,17 @@ public class Chat extends JFrame {
 	public Chat(ClientVar c){
 		Server = c.getServer();
 		Client = c;
+		
+		chat = new JTextField("");
+		chat.setSize(690, 3434);
+		chat.setLocation(0, 0);
+		
 		main = new JFrame("Chat");
+		main.setResizable(false);
+		main.setSize(690, 75);
+		main.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		main.setLocationRelativeTo(null);
+		main.setLocation(main.getLocation().x, main.getLocation().y + 400);
 		
 		Keyboard.addKeyEventDispatcher(new KeyEventDispatcher(){
 			@Override
@@ -33,25 +42,19 @@ public class Chat extends JFrame {
 					}
 					chat.setText(msg);
 				}
-				if(key.getKeyCode() == KeyEvent.VK_ENTER){
+				if(key.getKeyCode() == KeyEvent.VK_ENTER && chat.hasFocus()){
 					Server.sendData("chat/" + Client.getUser() + ": " + chat.getText());
 					chat.setText("");
+					main.removeAll();
+					main.setVisible(false);
 					Client.isChatting = false;
 				}
 				return false;
 			}
 		});
 		
-		chat = new JTextField();
-		chat.setSize(690, 75);
-		
-		main.setLayout(new FlowLayout());
-		main.setResizable(false);
-		main.setSize(690, 75);
-		main.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		main.setLocationRelativeTo(null);
-		main.setLocation(main.getLocation().x, main.getLocation().y + 400);
-		main.getContentPane().add(chat);
+		main.add(chat);
 		main.setVisible(true);
+		main.repaint();
 	}
 }
