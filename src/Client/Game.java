@@ -1,8 +1,7 @@
 package Client;
 
-import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
 import java.awt.event.KeyEvent;
@@ -13,6 +12,7 @@ import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 
 import ClientLauncher.ClientVar;
 import Server.RecieveDataThread;
@@ -21,21 +21,29 @@ import Server.Server;
 public class Game extends JFrame {
 
 	private JFrame main;
-	private final KeyboardFocusManager Keyboard = KeyboardFocusManager.getCurrentKeyboardFocusManager();
 	private ClientVar Client;
-	private RecieveDataThread Data;
-	private volatile Graphics tmp;
-	private int msgnum;
-	public String chatmsg;
 	private Server server;
-	public ArrayList<JLabel> history;
-	
-	
+	private JTextField chat;
+	private ArrayList<JLabel> history = new ArrayList<JLabel>();
+
+	private final KeyboardFocusManager Keyboard = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+
 	public Game(Server s, ClientVar c) throws SocketException{
-		Data = new RecieveDataThread(this);
+		c.setGame(this);
+		new RecieveDataThread(this);
 		main = new JFrame("Client");
 		main.setLayout(null);
 		main.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		main.setSize(1000, 700);
+		main.setVisible(true);
+		main.setLocationRelativeTo(null);
+
+		chat = new JTextField();
+		chat.setBounds(15, 625, 690, 25);
+
+		Client = c;
+		server = s;
+
 		main.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent winEvt) {
@@ -43,44 +51,50 @@ public class Game extends JFrame {
 				System.exit(0);
 			}
 		});
-		main.setSize(1000, 700);
-		main.setVisible(true);
-		main.setLocationRelativeTo(null);
-		main.getContentPane().setBackground(Color.DARK_GRAY);
-
-		Client = c;
-		server = s;
 
 		Keyboard.addKeyEventDispatcher(new KeyEventDispatcher(){
 			@Override
 			public boolean dispatchKeyEvent(KeyEvent key){
-				if(key.getKeyCode() == KeyEvent.VK_T && !Client.isChatting){
-					new Chat(Client);
-					Client.isChatting = true;
+				if(chat.getText().length() >= 100){
+					String msg = null;
+					while(chat.getText().length() >= 101){
+						msg = chat.getText().substring(0, chat.getText().length() - 1);
+					}
+					chat.setText(msg);
+				} 
+				if(key.getKeyCode() == KeyEvent.VK_ENTER && chat.hasFocus()){
+					if(!chat.getText().trim().isEmpty()){
+						Client.getServer().sendData("chat/" + Client.getUser() + ": " + chat.getText());
+					}
+					chat.setText("");
 				}
 				return false;
 			}
 		});
 
-		Client.setGame(this);
-		history = new ArrayList<JLabel>();
-		
+		main.add(chat);
 		main.repaint();
 	}
 
-	public void paint(Graphics g) {
-		//g.drawString(chatmsg, 100, 100);
-		
-		for(JLabel l : history){
-			if(l.getLocation().y <= 0){
-				main.getContentPane().remove(l);
-				history.remove(l);
-			} else l.setLocation(l.getLocation().x, l.getLocation().y - 20);
+	public void addChatMessage(String s) {
+		for(Component l : main.getContentPane().getComponents()){
+			if(l instanceof JLabel){
+				l.setLocation(l.getLocation().x, l.getLocation().y - 20);
+				if(l.getLocation().y <= 400){
+					main.getContentPane().remove(l);
+					history.remove(l);
+				}		
+			}
 		}
-		
-		JLabel chat = new JLabel(chatmsg);
-		chat.setBounds(10, 600, 100, 20);
-		chat.setFont(new Font(chat.getFont().getFontName(), Font.BOLD, 25));
-		main.getContentPane().add(chat);
+
+		if(!s.trim().isEmpty()){
+			JLabel chat = new JLabel(s.trim());
+			chat.setBounds(15, 600, 690, 22);
+			chat.setFont(new Font(chat.getFont().getFontName(), Font.PLAIN, 15));
+			history.add(chat);
+			main.add(chat);
+		}
+
+		main.repaint();
 	}
 }

@@ -14,18 +14,17 @@ public class RecieveDataThread extends Thread {
 
 	public RecieveDataThread(Game g) throws SocketException{
 		this.g = g;
-		super.start();
 		ds = new DatagramSocket(8494);
+		super.start();
 	}
 
 	public void run(){
 		try {
 			while(true){
-				byte[] data = new byte[1024];
+				byte[] data = new byte[100];
 				DatagramPacket pk = new DatagramPacket(data, data.length);
 				ds.receive(pk);
-				g.chatmsg = new String(pk.getData()).trim();
-				g.repaint();
+				g.addChatMessage(new String(pk.getData()));
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
