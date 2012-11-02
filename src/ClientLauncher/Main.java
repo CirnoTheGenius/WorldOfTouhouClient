@@ -165,7 +165,7 @@ public class Main extends JFrame implements ActionListener {
 		if(!sideImageFolder.exists()){
 			sideImageFolder.mkdir();
 		}
-
+s
 		for(int i=0; i < 6; i++){
 			if(!new File(System.getProperty("user.home") + (i == 5 ? ("/WoTData/SideImages/mark.png") : ("/WoTData/SideImages/img" + i + ".png"))).exists()){
 				ReadableByteChannel rbc = Channels.newChannel(new URL(requiredImages[i]).openStream());
