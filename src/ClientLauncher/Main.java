@@ -194,7 +194,7 @@ public class Main extends JFrame implements ActionListener {
 		command.add(javaBin);
 		command.add("-jar");
 		command.add(currentJar.getPath());
-
+s
 		new ProcessBuilder(command).start();
 		System.exit(0);
 	}
