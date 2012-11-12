@@ -42,15 +42,13 @@ public class Main extends JFrame implements ActionListener {
 	 * Eat cake with Yukari - Border Manipulation [ Lie and Truth! ]
 	 */
 
-
 	private final ClientVar Client = new ClientVar();
 
-	private JFrame main;
 	private JTextField host, username;
 	private JLabel hostL, usernameL, picture, watermark;
 	private JButton confirm;
 
-	private final static boolean debug = true, useInternet = true;
+	private final static boolean debug = true, useInternet = false;
 
 	private final int version = 1;
 
@@ -68,12 +66,12 @@ public class Main extends JFrame implements ActionListener {
 
 	public Main() {
 		try {
-			main = new JFrame("ClientLauncher");
-			main.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			main.setLayout(null);
-			main.setSize(800, 384);
-			main.setLocationRelativeTo(null);
-			main.setResizable(false);
+			new JFrame("ClientLauncher");
+			this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			this.setLayout(null);
+			this.setSize(800, 384);
+			this.setLocationRelativeTo(null);
+			this.setResizable(false);
 
 			if(useInternet){
 				checkVersion();
@@ -92,15 +90,13 @@ public class Main extends JFrame implements ActionListener {
 				watermarkimg.close();
 				sideimg.close();
 
-				main.add(picture);
-				main.add(watermark);
+				this.add(picture);
+				this.add(watermark);
 			}
 
 
 			//public void callMe(){}
 			//Hey, I just met you. I made a function. So here's callMe(). So call it maybe?
-
-
 
 			host = new JTextField();
 			host.setBounds(510, 25, 260, 50);
@@ -118,14 +114,14 @@ public class Main extends JFrame implements ActionListener {
 			confirm.addActionListener(this);
 			confirm.setBounds(510, 155, 260, 50);
 
-			main.add(host);
-			main.add(username);
-			main.add(hostL);
-			main.add(usernameL);
-			main.add(confirm);
+			this.add(host);
+			this.add(username);
+			this.add(hostL);
+			this.add(usernameL);
+			this.add(confirm);
 
 			//Always do this last.
-			main.setVisible(true);
+			this.setVisible(true);
 		} catch (IOException e){
 			if(useInternet){
 				System.out.println("Failed to read files! Attempting to download images...");
@@ -147,7 +143,7 @@ public class Main extends JFrame implements ActionListener {
 		InputStream v = new URL("http://dl.dropbox.com/u/35094909/WorldOfTouhou/version.txt").openStream();
 		Scanner s = new Scanner(v);
 		if(Integer.valueOf(s.nextLine()) > version){
-			JOptionPane.showMessageDialog(main, "New version avaliable! Contact Tenko!", "New version!", JOptionPane.WARNING_MESSAGE);
+			JOptionPane.showMessageDialog(this, "New version avaliable! Contact Tenko!", "New version!", JOptionPane.WARNING_MESSAGE);
 		}
 		s.close();
 		v.close();
@@ -165,7 +161,7 @@ public class Main extends JFrame implements ActionListener {
 		if(!sideImageFolder.exists()){
 			sideImageFolder.mkdir();
 		}
-s
+		
 		for(int i=0; i < 6; i++){
 			if(!new File(System.getProperty("user.home") + (i == 5 ? ("/WoTData/SideImages/mark.png") : ("/WoTData/SideImages/img" + i + ".png"))).exists()){
 				ReadableByteChannel rbc = Channels.newChannel(new URL(requiredImages[i]).openStream());
@@ -227,18 +223,18 @@ s
 				Client.setUser(username.getText());
 				Client.setSocket(new Socket(Client.getHost(), 9999));
 			} else {
-				JOptionPane.showMessageDialog(main, "Please enter a host or username!", "Failed to Connect!", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, "Please enter a host or username!", "Failed to Connect!", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 
 			Client.getServer().sendData("user/" + Client.getUser());
 			Client.setGame(new Game(Client.getServer(), Client));
-			main.setVisible(false);
+			this.setVisible(false);
 		} catch (UnknownHostException e){
-			JOptionPane.showMessageDialog(main, "Could not connect to " + host.getText() + "! Unknown host!", "Failed to Connect!", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, "Could not connect to " + host.getText() + "! Unknown host!", "Failed to Connect!", JOptionPane.ERROR_MESSAGE);
 			e.printStackTrace();
 		} catch (IOException e){
-			JOptionPane.showMessageDialog(main, "Could not connect to " + host.getText() + "! Host either rejected our connection or is down!", "Failed to Connect!", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, "Could not connect to " + host.getText() + "! Host either rejected our connection or is down!", "Failed to Connect!", JOptionPane.ERROR_MESSAGE);
 			e.printStackTrace();
 		}
 	}
